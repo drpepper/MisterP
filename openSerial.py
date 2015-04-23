@@ -8,15 +8,24 @@ import serial
 import serial.tools.list_ports
 import argparse
 import sys
+import threading
 
 
 serialPort = None
+shouldStop = False
 
 webSocketHandlers = []
+
+
+def read_from_serial_port():
+    while not shouldStop:
+        dataRead = serialPort.readline()
+        broadcast(dataRead)
 
 def broadcast(msg):
     for handler in webSocketHandlers:
         handler.write_message(msg)
+
 
 class SerialWebSocket(tornado.websocket.WebSocketHandler):
     instances = set()
@@ -28,18 +37,14 @@ class SerialWebSocket(tornado.websocket.WebSocketHandler):
     def open(self):
         print "WebSocket opened"
         webSocketHandlers.append(self)
-        # while True:
-        #     read = serialPort.readline()
-        #     print u"Read %s" % read
-        #     self.write_message(read)
-        #     gen.sleep(1)
 
     def on_message(self, message):
-        self.write_message(u"You said: " + message)
+        print "Writing to serial: %s" % message
+        serialPort.write("hello")
 
     def on_close(self):
         print "WebSocket closed"
-        clients.remove(self)
+        webSocketHandlers.remove(self)
 
 application = tornado.web.Application([
     (r"/", SerialWebSocket),
@@ -62,13 +67,17 @@ if __name__ == "__main__":
 
     # Connect to serial port
     print "Connecting to serial port %s" % args.serialPort
-    global serialPort
     serialPort = serial.Serial(args.serialPort)
-    serialPort.write("l")
-    read = serialPort.readline()
-    print "Read %s" % read
-    broadcast(read)
+    
+    # Read from it in the background
+    thread = threading.Thread(target=read_from_serial_port)
+    thread.start()
 
-    print "Listening on websocket port %d" % args.webPort
-    application.listen(args.webPort)
-    tornado.ioloop.IOLoop.instance().start()
+    try:
+        print "Listening on websocket port %d" % args.webPort
+        application.listen(args.webPort)
+        tornado.ioloop.IOLoop.instance().start()
+    except KeyboardInterrupt:
+        print "\nInterrupted by user, shutting down"
+        shouldStop = True
+        sys.exit()
