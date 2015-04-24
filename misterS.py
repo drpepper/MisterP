@@ -55,14 +55,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--webPort", type=int, default=8888, help="Websocket port number")
     parser.add_argument("--serialPort", help="Serial device name")
+    parser.add_argument("--list", action='store_true', help="List serial devices")
 
     args = parser.parse_args()
 
-    if args.serialPort == None:
+    if args.list or args.serialPort == None:
         # List serial ports and exit 
         print "Serial devices:"
         for (port, description, id) in serial.tools.list_ports.comports():
-            print "%s - %s - %s" % (port, description, id)
+            print "%s: %s (ID: %s)" % (port, description, id)
         sys.exit(0)
 
     # Connect to serial port
