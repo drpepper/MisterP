@@ -39,8 +39,9 @@ class SerialWebSocket(tornado.websocket.WebSocketHandler):
         webSocketHandlers.append(self)
 
     def on_message(self, message):
-        print "Writing to serial: %s" % message
-        serialPort.write("hello")
+        asciiMessage = message.encode("ascii", "ignore")
+        print "Writing to serial: %s" % asciiMessage
+        serialPort.write(asciiMessage)
 
     def on_close(self):
         print "WebSocket closed"
@@ -72,6 +73,7 @@ if __name__ == "__main__":
     
     # Read from it in the background
     thread = threading.Thread(target=read_from_serial_port)
+    thread.daemon = True # Kill thread when main thread quits
     thread.start()
 
     try:
