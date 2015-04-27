@@ -54,7 +54,7 @@ application = tornado.web.Application([
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--webPort", type=int, default=8888, help="Websocket port number")
+    parser.add_argument("--webPort", type=int, default=53141, help="Websocket port number")
     parser.add_argument("--serialPort", help="Serial device name")
     parser.add_argument("--list", action='store_true', help="List serial devices")
 
