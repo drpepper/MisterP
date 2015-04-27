@@ -1,4 +1,4 @@
-# Mister S
+# Mister S.
 
 A program to connect web applications to serial devices via web sockets.
 
@@ -26,7 +26,7 @@ Serial devices:
 
 $ ./misterS.py --serialPort /dev/cu.usbmodem1421
 Connecting to serial port /dev/cu.usbmodem1421
-Listening on websocket port 8888
+Listening on websocket port 53141
 ```
 
-By default, Mister S serves web sockets on port 8888. To change the port, use the `--webPort` argument.
+By default, Mister S. serves web sockets on port 53141. To change the port, use the `--webPort` argument.
