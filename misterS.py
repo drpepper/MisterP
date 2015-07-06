@@ -44,8 +44,6 @@ class BaseHandler(tornado.web.RequestHandler):
 
 
 class SerialWebSocket(tornado.websocket.WebSocketHandler):
-    instances = set()
-
     # Allow any origin
     def check_origin(self, origin):
         return True
