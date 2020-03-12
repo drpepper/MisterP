@@ -10,7 +10,7 @@ Based on [Mister S.](https://github.com/CyberCRI/MisterS), the same idea using t
 ## Installation
 
 1. Clone or download this repository
-2. Install Python 3
+2. Install Python 2
 3. Using pip, install: 
   - tornado
   - psychopy
